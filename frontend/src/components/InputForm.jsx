@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import axios from 'axios'
 
 function InputForm({ onSubmit }) {
   const [grantData, setGrantData] = useState({
@@ -8,7 +7,6 @@ function InputForm({ onSubmit }) {
     audience: "",
     funding: "",
     details: "",
-    file: null,
   });
 
   const handleChange = (e) => {
@@ -19,36 +17,11 @@ function InputForm({ onSubmit }) {
     });
   };
 
-  const handleFileChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      setGrantData({
-        ...grantData,
-        file: file,
-      });
-    }
-  };
-
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-    const formData = new FormData();
-  
-    for (const key in grantData) {
-      if (grantData[key] !== null) {
-        formData.append(key, grantData[key]);
-      }
-    }
-  
-    try {
-      const response = await axios.post("http://localhost:5001/api/grant", formData, {
-        headers: { 'Content-Type': 'multipart/form-data' }
-      });
-      onSubmit(response.data);
-    } catch (error) {
-      console.error("Error submitting form:", error);
-    }
+    console.log("Form submitted with data:", grantData);
+    onSubmit(grantData); // Pass data to the parent component
   };
-  
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
@@ -110,17 +83,6 @@ function InputForm({ onSubmit }) {
           rows="4"
           className="w-full p-2 border"
           required
-        />
-      </div>
-      <div>
-        <label htmlFor="file" className="block">Upload Document (PDF or TXT)</label>
-        <input
-          type="file"
-          id="file"
-          name="file"
-          accept=".pdf,.txt"
-          onChange={handleFileChange}
-          className="w-full p-2 border"
         />
       </div>
 

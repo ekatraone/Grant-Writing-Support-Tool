@@ -1,32 +1,20 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
+import ReactMarkdown from "react-markdown";
 
-function OutputDisplay() {
-  const [aiOutput, setAiOutput] = useState(""); // Store AI-generated output
-
-  useEffect(() => {
-    // Open a WebSocket connection
-    const ws = new WebSocket("ws://localhost:8080");
-
-    // Listen for messages from the WebSocket
-    ws.onmessage = (event) => {
-      console.log("Received from WebSocket:", event.data); // Log WebSocket data
-      setAiOutput((prev) => prev + event.data + "\n"); // Append received data to aiOutput
-    };
-
-    // Cleanup: close WebSocket connection on unmount
-    return () => {
-      ws.close();
-    };
-  }, []);
-
+function OutputDisplay({ aiOutput, isLoading }) {
   return (
     <div>
       <h2 className="text-2xl font-bold mb-4">AI Output</h2>
-      <div className="border p-4 bg-gray-100">
-        {aiOutput ? (
-          <pre>{aiOutput}</pre> // Display AI output
+      <div
+        className="border p-4 bg-gray-100 overflow-auto"
+        style={{ maxHeight: "600px", wordBreak: "break-word" }}
+      >
+        {isLoading ? (
+          <p>Loading... Please wait while the AI processes your request.</p>
+        ) : aiOutput ? (
+          <ReactMarkdown className="font-mono">{aiOutput}</ReactMarkdown> /* Render Markdown properly */
         ) : (
-          <p>No output yet. Waiting for AI response...</p> // Placeholder text
+          <p>No output yet. Submit a grant to see the result.</p>
         )}
       </div>
     </div>
