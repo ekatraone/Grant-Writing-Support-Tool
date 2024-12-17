@@ -1,0 +1,7 @@
+# Django-specific
+*.pyc
+__pycache__/
+db.sqlite3
+
+# Virtual environment
+mygrantai/
