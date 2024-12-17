@@ -1,0 +1,17 @@
+<!-- resources.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grant Writing Resources</title>
+</head>
+<body>
+    <h1>Grant Writing Resources</h1>
+    <ul>
+        {% for resource in resources %}
+            <li><a href="{{ resource.url }}">{{ resource.title }}</a>: {{ resource.description }}</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

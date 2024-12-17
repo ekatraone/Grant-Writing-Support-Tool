@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home - Sentiment Analysis Tool</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f8f9fa;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            text-align: center;
+            background: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: #333;
+        }
+        p {
+            margin: 20px 0;
+            color: #555;
+        }
+        a {
+            display: inline-block;
+            text-decoration: none;
+            background-color: #007BFF;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        a:hover {
+            background-color: #0056b3;
+        }
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            padding: 10px;
+            background-color: #ffffff;
+        }
+        footer a {
+            text-decoration: none;
+            color: #007BFF;
+        }
+        footer a:hover {
+            color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav>
+        <ul style="list-style-type: none; padding: 0; text-align: center;">
+            <li style="display: inline; margin: 0 15px;"><a href="/">Home</a></li>
+            <!-- <li style="display: inline; margin: 0 15px;"><a href="/about/">About Us</a></li> -->
+            <li style="display: inline; margin: 0 15px;"><a href="{% url 'privacy_policy' %}">Privacy Policy</a></li>
+        </ul>
+    </nav>
+
+    <div class="container">
+        <h1>Welcome to the Sentiment Analysis Tool</h1>
+        <p>Analyze the sentiment of any text with our AI-powered tool.</p>
+        <a href="/analyze-page/">Go to Analyze Page</a>
+    </div>
+
+    <!-- Footer with Privacy Policy Link -->
+    <footer>
+        <p>&copy; 2024 Sentiment Analysis Tool. All rights reserved.</p>
+    </footer>
+</body>
+</html>

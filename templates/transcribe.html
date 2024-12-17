@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Voice Note</title>
+</head>
+<body>
+    <h1>Upload your voice note for transcription</h1>
+    
+    <form id="audioForm" enctype="multipart/form-data">
+        <input type="file" id="audioFile" name="audio" accept="audio/*" required>
+        <button type="submit">Submit</button>
+    </form>
+
+    <div id="result"></div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('#audioForm').on('submit', function(event) {
+                event.preventDefault();  // Prevent default form submission
+
+                const formData = new FormData();
+                formData.append('audio', $('#audioFile')[0].files[0]);
+
+                $.ajax({
+                    url: '/transcribe-voice/',  // URL pattern to handle the audio file
+                    type: 'POST',
+                    data: formData,
+                    contentType: false,
+                    processData: false,
+                    success: function(response) {
+                        $('#result').text('Transcription: ' + response.transcribed_text);
+                    },
+                    error: function(xhr, status, error) {
+                        $('#result').text('Error: ' + error);
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

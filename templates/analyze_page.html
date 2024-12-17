@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analyze Text</title>
+</head>
+<body>
+    <h1>Analyze Your Text</h1>
+    <form action="/analyze/" method="post">
+        {% csrf_token %}
+        <label for="text">Enter Text for Analysis:</label><br>
+        <textarea id="text" name="text" rows="5" cols="40"></textarea><br><br>
+        <button type="submit">Analyze</button>
+    </form>
+</body>
+</html>
