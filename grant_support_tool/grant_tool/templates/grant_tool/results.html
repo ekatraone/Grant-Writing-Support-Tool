@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Analysis Results</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        pre { background-color: #f4f4f4; padding: 15px; border-radius: 5px; }
+    </style>
+</head>
+<body>
+    <h1>Results for "{{ draft.title }}"</h1>
+    <h2>AI Suggestions:</h2>
+    <pre>{{ draft.analysis_results.suggestions }}</pre>
+    <h2>Grammar Issues:</h2>
+    <ul>
+        {% for issue in draft.analysis_results.grammar_issues %}
+        <li>{{ issue }}</li>
+        {% empty %}
+        <li>No grammar issues found!</li>
+        {% endfor %}
+    </ul>
+    <a href="{% url 'home' %}">Analyze Another Draft</a>
+</body>
+</html>
