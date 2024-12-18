@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <title>Grant Writing AI Tool</title>
+</head>
+<body>
+    <div class="container">
+        <h1>Grant Writing AI Tool</h1>
+        <form method="POST" enctype="multipart/form-data">
+            <label for="files">Upload Documents (txt, docx, pdf):</label><br>
+            <input type="file" name="files" multiple accept=".txt,.docx,.pdf"><br><br>
+            <label for="documents">Enter Additional Documents (one per line):</label><br>
+            <textarea name="documents" rows="10" cols="50"></textarea><br>
+            <label for="keywords">Enter Keywords (comma-separated):</label><br>
+            <input type="text" name="keywords" required><br>
+            <button type="submit">Generate Proposal</button>
+        </form>
+        {% if proposal %}
+            <h2>Generated Grant Proposal:</h2>
+            <p>{{ proposal }}</p>
+        {% endif %}
+    </div>
+ </body>
+</html>     
