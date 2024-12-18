@@ -47,7 +47,7 @@
 
 **Example Prompt:**
 
-![alt text](./how-to-prompt.png)
+![alt text](./img.png)
 
 ### 2. FUTURE GOAL -  Voice Note Processing
 - Voice notes uploaded by users are transcribed into text using AI.
