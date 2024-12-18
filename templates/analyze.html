@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sentiment Analysis</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f7f6;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            width: 100%;
+            max-width: 800px;
+            margin: 50px auto;
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        .textarea-container {
+            width: 100%;
+            margin-bottom: 20px;
+        }
+        textarea {
+            width: 100%;
+            height: 150px;
+            padding: 15px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+            resize: vertical;
+            font-family: Arial, sans-serif;
+        }
+        .submit-button {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            font-size: 16px;
+            background-color: #007BFF;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        .submit-button:hover {
+            background-color: #0056b3;
+        }
+        .result-container {
+            margin-top: 30px;
+            padding: 20px;
+            background-color: #e9f7ef;
+            border: 1px solid #d4edda;
+            border-radius: 5px;
+            display: none;
+        }
+        .result-container h2 {
+            margin: 0;
+            font-size: 20px;
+            color: #28a745;
+        }
+        .result-container p {
+            font-size: 16px;
+            color: #333;
+        }
+        .error-container {
+            display: none;
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            padding: 15px;
+            border-radius: 5px;
+        }
+        .voice-note-container {
+            margin-top: 20px;
+        }
+        .voice-note-container input[type="file"] {
+            display: none;
+        }
+        .voice-note-container label {
+            padding: 10px;
+            background-color: #007BFF;
+            color: white;
+            cursor: pointer;
+            border-radius: 5px;
+            font-size: 16px;
+            margin-top: 10px;
+            display: inline-block;
+        }
+        .voice-note-container button {
+            margin-top: 10px;
+            padding: 10px 15px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+        }
+        .voice-note-container button:hover {
+            background-color: #0056b3;
+        }
+        .transcribed-text {
+            margin-top: 15px;
+            padding: 10px;
+            background-color: #f1f1f1;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Sentiment Analysis</h1>
+        
+        <!-- Text input form -->
+        <div class="textarea-container">
+            <textarea id="textInput" placeholder="Enter text here" required></textarea>
+        </div>
+        <button type="submit" class="submit-button" id="analyzeButton">Analyze</button>
+
+        <!-- Display analysis result -->
+        <div class="result-container" id="resultContainer">
+            <h2>Analysis Result</h2>
+            <p id="sentiment"></p>
+            <p id="confidence"></p>
+        </div>
+
+        <!-- Display error message -->
+        <div class="error-container" id="errorContainer">
+            <p id="errorMessage"></p>
+        </div>
+
+        <!-- Voice Note Section -->
+        <div class="voice-note-container">
+            <h2>Or Upload a Voice Note</h2>
+            <input type="file" id="audioInput" accept="audio/*" />
+            <label for="audioInput">Choose Voice Note</label>
+            <button id="transcribeButton">Transcribe Voice</button>
+
+            <div class="transcribed-text" id="transcribedText"></div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('#analyzeButton').click(function(e) {
+                e.preventDefault();
+                
+                const inputText = $('#textInput').val().trim();
+
+                // Clear previous results or errors
+                $('#resultContainer').hide();
+                $('#errorContainer').hide();
+                $('#sentiment').text('');
+                $('#confidence').text('');
+                $('#errorMessage').text('');
+
+                if (!inputText) {
+                    $('#errorContainer').show();
+                    $('#errorMessage').text('Please enter some text to analyze.');
+                    return;
+                }
+
+                // Show loading indication
+                $('#resultContainer').show();
+                $('#sentiment').text('Analyzing...');
+                $('#confidence').text('');
+
+                $.ajax({
+                    url: '/analyze/',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({ text: inputText }),
+                    success: function(response) {
+                        const sentimentLabel = response.analysis.label;
+                        const confidenceScore = response.analysis.confidence;
+
+                        $('#sentiment').text('Sentiment: ' + sentimentLabel);
+                        $('#confidence').text('Confidence: ' + confidenceScore + '%');
+                    },
+                    error: function(err) {
+                        $('#errorContainer').show();
+                        $('#errorMessage').text('An error occurred while analyzing the text.');
+                    }
+                });
+            });
+
+            $('#transcribeButton').click(function() {
+                const formData = new FormData();
+                const fileInput = $('#audioInput')[0].files[0];
+
+                if (!fileInput) {
+                    $('#transcribedText').text('Please upload an audio file.');
+                    return;
+                }
+
+                formData.append('audio', fileInput);
+
+                $.ajax({
+                    url: '/transcribe-voice-note/',
+                    type: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function(response) {
+                        const transcribedText = response.transcribed_text;
+                        $('#transcribedText').text('Transcribed Text: ' + transcribedText);
+                    },
+                    error: function(err) {
+                        $('#transcribedText').text('An error occurred while transcribing the voice note.');
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
