@@ -1,4 +1,4 @@
-# Grant Proposal Generator
+# Grant Proposal Generator (using Documents and Keywords)
 This is a web application built using Flask and Hugging Face's GPT-2 model to help generate grant proposals based on uploaded documents and keywords. The application allows users to upload .txt, .docx, and .pdf files, extract key sections from these documents, and generate a draft grant proposal.
 
 #### Features
