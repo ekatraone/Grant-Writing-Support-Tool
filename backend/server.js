@@ -9,7 +9,6 @@ const port = process.env.PORT || 5001;
 app.use(express.json());
 app.use(cors());
 
-app.listen(port, () => console.log(`Server running on {$port}`))
 
 // Initialize Google Generative AI
 const genAI = new GoogleGenerativeAI(process.env.GOOGLE_GENERATIVE_AI_API_KEY);
