@@ -13,7 +13,7 @@ function Body() {
     try {
       console.log("Submitting data to backend:", data);
 
-      const response = await fetch("http://localhost:5001/api/grant", {
+      const response = await fetch("https://grant-writing-support-tool-1.onrender.comhttps://grant-writing-support-tool-1.onrender.com/api/grant", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
