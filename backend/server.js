@@ -8,8 +8,6 @@ const port = 5001;
 
 app.use(express.json());
 app.use(cors());
-app.use(express.static(path.join(__dirname, "../frontend/build")));
-
 
 // Initialize Google Generative AI
 const genAI = new GoogleGenerativeAI(process.env.GOOGLE_GENERATIVE_AI_API_KEY);
@@ -19,9 +17,6 @@ app.get('/', (req, res) => {
     res.send('Hello, World!');
 });
 
-app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, "../frontend/build", "index.html"));
-});
 
 // API route to handle grant submissions
 app.post('/api/grant', async (req, res) => {
