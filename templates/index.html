@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <title>Grant Proposal Generator</title>
+</head>
+<body class="container">
+    <h1>Grant Proposal Generator</h1>
+    
+    <form method="POST" enctype="multipart/form-data">
+        <label for="files">Upload Documents:</label>
+        <input type="file" name="files" multiple><br><br>
+        
+        <label for="documents">Additional Text Input:</label><br>
+        <textarea name="documents" rows="5" cols="50"></textarea><br><br>
+        
+        <label for="keywords">Keywords (comma-separated):</label>
+        <input type="text" name="keywords"><br><br>
+        
+        <button type="submit">Generate Proposal</button>
+    </form>
+
+    {% if proposal %}
+        <h2>Generated Proposal:</h2>
+    {% endif %}
+
+    {% if sections %}
+        <h2>Extracted Sections:</h2>
+        <ul>
+            {% for section, content in sections.items() %}
+                <li><strong>{{ section }}:</strong> {{ content }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+    {% if error %}
+        <h2 style="color: red;">Error:</h2>
+        <p>{{ error }}</p>
+    {% endif %}
+</body>
+</html>
