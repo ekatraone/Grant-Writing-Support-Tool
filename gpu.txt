@@ -4,14 +4,27 @@ from django.views.decorators.csrf import csrf_exempt
 from transformers import pipeline
 import json
 import requests
+import torch
 
-from django.http import HttpResponse
-import sentry_sdk
+# Check GPU availability and set device accordingly
+def get_device():
+    if torch.cuda.is_available():
+        print("CUDA is available. Using GPU.")
+        return 0  # GPU device
+    else:
+        print("CUDA is not available. Using CPU.")
+        return -1  # CPU device
 
-# Loading of model with the help of transformer
+# Loading the model pipeline
 try:
     print("Loading model pipeline...")
-    model_pipeline = pipeline("text-generation", model="daryl149/llama-2-7b-chat-hf", device="cpu", trust_remote_code=True)
+    device = get_device()
+    model_pipeline = pipeline(
+        "text-generation",
+        model="daryl149/llama-2-7b-chat-hf",
+        device=device,
+        trust_remote_code=True
+    )
     print("Model pipeline loaded successfully!")
 except Exception as e:
     print(f"Error loading model pipeline: {e}")
@@ -70,5 +83,3 @@ def grant_writer_ui(request):
                 response_data = f"An error occurred: {e}"
 
     return render(request, "grant_writer_ui.html", {"response": response_data})
-
-

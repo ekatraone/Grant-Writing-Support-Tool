@@ -11,7 +11,7 @@
 </head>
 <body class="bg-gray-100 font-sans flex flex-col min-h-screen">
 
-    <!-- Navbar (Floating) -->
+    <!-- Navbar -->
     <nav class="fixed top-0 left-0 right-0 bg-indigo-600 text-white shadow-lg z-50 p-4">
         <div class="max-w-4xl mx-auto flex justify-between items-center">
             <h1 class="text-3xl font-semibold">GrantAI</h1>
@@ -38,7 +38,7 @@
                 {% endif %}
             </div>
 
-            <!-- Generating Response Box (hidden initially) -->
+            <!-- Generating Response Box [hidden initially) -->
             <div id="generating-response" class="hidden text-center text-gray-500 p-4 mb-6">
                 <div class="flex justify-center items-center space-x-2">
                     <div class="w-3 h-3 bg-indigo-600 rounded-full animate-pulse"></div>
@@ -102,6 +102,58 @@
             generatingResponseBox.classList.remove('hidden');  // Show generating response box
         });
     </script>
+
+
+<script>
+    // Voice Command Integration
+    const voiceCommandBtn = document.getElementById("voice-command-btn");
+    const promptTextarea = document.getElementById("prompt");
+
+    // Check if the browser supports the Web Speech API
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+    if (SpeechRecognition) {
+        const recognition = new SpeechRecognition();
+        recognition.lang = "en-US"; // Set language to English
+        recognition.interimResults = false; // Use final results only
+        recognition.continuous = false; // Stop listening after the first result
+
+        // When speech recognition starts
+        recognition.onstart = () => {
+            voiceCommandBtn.innerHTML = '<i class="fas fa-microphone-slash text-xl"></i>'; // Change icon to indicate listening
+            voiceCommandBtn.disabled = true; // Disable button to avoid re-trigger
+        };
+
+        // When speech recognition ends
+        recognition.onend = () => {
+            voiceCommandBtn.innerHTML = '<i class="fas fa-microphone text-xl"></i>'; // Restore original icon
+            voiceCommandBtn.disabled = false; // Re-enable button
+        };
+
+        // Capture speech recognition results
+        recognition.onresult = (event) => {
+            const transcript = event.results[0][0].transcript; // Get the spoken text
+            promptTextarea.value = transcript; // Add text to the textarea
+        };
+
+        // Handle errors
+        recognition.onerror = (event) => {
+            console.error("Speech recognition error:", event.error);
+            voiceCommandBtn.innerHTML = '<i class="fas fa-microphone text-xl"></i>'; // Restore icon
+            voiceCommandBtn.disabled = false; // Re-enable button
+        };
+
+        // Add click event to start recognition
+        voiceCommandBtn.addEventListener("click", () => {
+            recognition.start(); // Start speech recognition
+        });
+    } else {
+        // If Speech API is not supported, disable the button and notify the user
+        voiceCommandBtn.disabled = true;
+        voiceCommandBtn.title = "Your browser does not support voice commands.";
+    }
+</script>
+
 
 </body>
 </html>
