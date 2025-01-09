@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Generate Response</title>
+</head>
+<body>
+    <h1>HuggingFace Model Integration</h1>
+    <form method="POST" action="{% url 'generate_response' %}">
+        {% csrf_token %}
+        <label for="prompt">Enter Prompt:</label><br>
+        <textarea name="prompt" rows="4" cols="50" placeholder="Enter your prompt"></textarea><br><br>
+        <button type="submit">Generate Response</button>
+    </form>
+</body>
+</html>
