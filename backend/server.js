@@ -1,13 +1,22 @@
-const express = require('express');
-const { GoogleGenerativeAI } = require('@google/generative-ai');
-require('dotenv').config();
-const cors = require('cors');
+import express from 'express';
+import { GoogleGenerativeAI } from '@google/generative-ai';
+import dotenv from 'dotenv';
+import cors from 'cors';
+import multer from 'multer';
+
+import fetch from 'node-fetch';
 
 const app = express();
 const port = process.env.PORT || 5001;
 
 app.use(express.json());
 app.use(cors());
+
+dotenv.config() 
+
+// Configure Multer for in-memory storage
+const storage = multer.memoryStorage();
+const upload = multer({ storage });
 
 
 // Initialize Google Generative AI
@@ -18,15 +27,51 @@ app.get('/', (req, res) => {
     res.send('Hello, World!');
 });
 
+// Route to handle voice file uploads
+app.post("/api/voice", upload.single("file"), async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ error: "No file uploaded" });
+    }
+
+    const audioBuffer = req.file.buffer; // File data in memory
+
+    // Send file to Hugging Face Whisper model
+    const hfResponse = await fetch("https://api-inference.huggingface.co/models/openai/whisper-large", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${process.env.HUGGINGFACE_API_KEY}`,
+        "Content-Type": "application/octet-stream",
+      },
+      body: audioBuffer, // Pass the buffer
+    });
+
+    if (!hfResponse.ok) {
+      // console.log(hfResponse)
+      throw new Error("Failed to process audio with Hugging Face API");
+    }
+
+    const transcription = await hfResponse.json();
+
+    // Send the transcription result back to the frontend and console log it
+    res.status(200).json({ transcription });
+
+  } catch (error) {
+    console.error("Error processing voice input:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
 
 // API route to handle grant submissions
 app.post('/api/grant', async (req, res) => {
-  const { grant_title, objective, audience, funding, details } = req.body;
+  const { grant_title, objective, audience, funding, details, transcription } = req.body;
 
-  if (!grant_title || !objective || !audience || !funding || !details) {
+  if (!grant_title || !objective || !audience || !funding || !details || transcription) {
     return res.status(400).json({ error: "All fields are required" });
   }
 
+  console.log(transcription)
   try {
     // Create a structured prompt
     const prompt = `
@@ -36,6 +81,8 @@ app.post('/api/grant', async (req, res) => {
       Funding Request: ${funding}
       Project Description: ${details}
       
+      Transcription from Voice Input: ${transcription}
+
       Based on this information, write a brief grant proposal with the key objectives, target audience, and funding goals.
       
       Problem Statement: Clearly define the problem or issue your project addresses.
