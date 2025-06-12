@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Grant Writing Support Tool</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        textarea { width: 100%; }
+        button { background-color: #4CAF50; color: white; padding: 10px 15px; }
+    </style>
+</head>
+<body>
+    <h1>Grant Writing Support Tool</h1>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Analyze</button>
+    </form>
+</body>
+</html>
